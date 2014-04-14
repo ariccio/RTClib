@@ -19,8 +19,8 @@
 
 #include <Wire.h>
 #include <SPI.h>
-#include <RTClib.h>
-#include <RTC_DS3231.h>
+#include "RTClib.h"
+#include "RTC_DS3231.h"
 
 RTC_DS3231 RTC;
 
@@ -39,7 +39,8 @@ RTC_DS3231 RTC;
 #define INT0_PIN   2     // INT0 pin for 32kHz testing?
 #define LED_PIN    9     // random LED for testing...tie to ground through series resistor..
 #define LED_ONBAORD 13   // Instead of hooking up an LED, the nano has an LED at pin 13.
-
+//#define FUTURE_TIME TRUE
+//#define SERIAL_PRINT_TEMP TRUE
 //----------- GLOBALS  -------------------------
 
 volatile long TOGGLE_COUNT = 0;
@@ -134,12 +135,13 @@ void loop () {
   
     DateTime now = RTC.now();
     
+    #ifdef SERIAL_PRINT_TEMP    
     RTC.forceTempConv(true);  //DS3231 does this every 64 seconds, we are simply testing the function here
     float temp_float = RTC.getTempAsFloat();
     int16_t temp_word = RTC.getTempAsWord();
     int8_t temp_hbyte = temp_word >> 8;
     int8_t temp_lbyte = temp_word &= 0x00FF;
-    
+    #endif
     
     
     Serial.print(now.year(), DEC);
@@ -160,7 +162,8 @@ void loop () {
     Serial.print("s = ");
     Serial.print(now.unixtime() / 86400L);
     Serial.println("d");
-    
+
+    #ifdef FUTURE_TIME
     // calculate a date which is 7 days and 30 seconds into the future
     DateTime future (now.unixtime() + 7 * 86400L + 30);
     
@@ -177,7 +180,9 @@ void loop () {
     Serial.print(':');
     Serial.print(future.second(), DEC);
     Serial.println();
+    #endif
     
+    #ifdef SERIAL_PRINT_TEMP
     //Display temps
     Serial.print("Temp as float: ");
     Serial.print(temp_float, DEC);
@@ -187,7 +192,7 @@ void loop () {
     Serial.print(".");
     Serial.print(temp_lbyte, DEC);
     Serial.println();
-    
+    #endif
     Serial.println();
     
     delay(LOOP_DELAY);
