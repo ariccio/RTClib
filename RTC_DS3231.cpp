@@ -37,7 +37,7 @@ uint8_t RTC_DS3231::begin(void)
 uint8_t RTC_DS3231::isrunning(void)
 {
     Wire.beginTransmission(DS3231_ADDRESS);
-    Wire.SEND(0);
+    Wire.SEND(DS3231_REG_STATUS_CTL);
     Wire.endTransmission();
 
     Wire.requestFrom(DS3231_ADDRESS, 1);
