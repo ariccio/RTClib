@@ -298,7 +298,7 @@ void RTC_DS3231::BBSQWEnable(uint8_t enable)
 void RTC_DS3231::SQWFrequency(uint8_t freq)
 {
 	Wire.beginTransmission(DS3231_ADDRESS);
-	Wire.SEND( DS3231_REG_CONTROL );
+	Wire.SEND(DS3231_REG_CONTROL);
 	Wire.endTransmission();
 
 	// control register
@@ -310,7 +310,7 @@ void RTC_DS3231::SQWFrequency(uint8_t freq)
 	creg |= freq; // Set freq bits
 
 	Wire.beginTransmission(DS3231_ADDRESS);
-	Wire.SEND(0x0E);
+	Wire.SEND(DS3231_REG_CONTROL);
 	Wire.SEND(creg);
 	Wire.endTransmission();
 }
