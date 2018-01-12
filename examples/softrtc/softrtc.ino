@@ -1,18 +1,27 @@
 // Date and time functions using just software, based on millis() & timer
 
-#include <Wire.h>
+#include <Arduino.h>
+#include <Wire.h>         // this #include still required because the RTClib depends on it
 #include "RTClib.h"
 
-RTC_Millis RTC;
+#if defined(ARDUINO_ARCH_SAMD)
+// for Zero, output on USB Serial console, remove line below if using programming port to program the Zero!
+   #define Serial SerialUSB
+#endif
+
+RTC_Millis rtc;
 
 void setup () {
     Serial.begin(57600);
     // following line sets the RTC to the date & time this sketch was compiled
-    RTC.begin(DateTime(__DATE__, __TIME__));
+    rtc.begin(DateTime(F(__DATE__), F(__TIME__)));
+    // This line sets the RTC with an explicit date & time, for example to set
+    // January 21, 2014 at 3am you would call:
+    // rtc.adjust(DateTime(2014, 1, 21, 3, 0, 0));
 }
 
 void loop () {
-    DateTime now = RTC.now();
+    DateTime now = rtc.now();
     
     Serial.print(now.year(), DEC);
     Serial.print('/');
